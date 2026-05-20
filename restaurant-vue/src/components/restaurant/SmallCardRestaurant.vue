@@ -9,11 +9,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  /** Si fourni (ex. depuis la liste), évite un appel API par carte */
-  restaurant: {
-    type: Object,
-    default: null,
-  },
 });
 
 async function load() {
@@ -30,10 +25,16 @@ watch(
   load,
   { deep: true },
 );
+
+const handleCardClick = (id) => {
+  console.log('Test id:', id);
+  console.log('Test display:', display.value);
+};
+
 </script>
 
 <template>
-  <article class="small-card">
+  <article class="small-card" @click="handleCardClick(display.id)" :class="{ 'is-clickable': display }">
     <p v-if="!display" class="muted">Chargement…</p>
     <template v-else>
       <p class="small-name">{{ display.name }}</p>
@@ -72,5 +73,9 @@ watch(
 .muted {
   margin: 0;
   color: #888;
+}
+
+.is-clickable {
+  cursor: pointer;
 }
 </style>
