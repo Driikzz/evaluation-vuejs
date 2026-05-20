@@ -1,15 +1,14 @@
+<script setup></script>
+
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <main>
+    <h2>À propos</h2>
+    <p>Page d’information (placeholder).</p>
+  </main>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+<style scoped>
+h2 {
+  margin-top: 0;
 }
 </style>
