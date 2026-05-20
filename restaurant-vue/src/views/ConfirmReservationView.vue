@@ -1,48 +1,48 @@
 <script setup>
+import { computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia'; 
+import { useReservationStore } from '@/stores/reservationStore';
 import ButtonCancel from '@/components/reservation/ButtonCancel.vue';
 import ButtonConfirm from '@/components/reservation/ButtonConfirm.vue';
-import { cancelReservation, getReservationByToken } from '@/api/reservation';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 const props = defineProps({
-    token: {
-        type: String,
-        required: true,
-    },
+  token: {
+    type: String,
+    required: true,
+  },
 });
 
 const router = useRouter();
-const reservation = ref(null);
-const isLoading = ref(true);
-const errorMessage = ref('');
+
+const reservationStore = useReservationStore();
+
+const { 
+  currentReservation: reservation, 
+  isLoading, 
+  error: errorMessage 
+} = storeToRefs(reservationStore);
 
 const isTokenValid = computed(() => Boolean(reservation.value?.id));
 
 onMounted(async () => {
-    try {
-        reservation.value = await getReservationByToken(props.token);
-        if (!reservation.value?.id) {
-            errorMessage.value = 'Token invalide ou reservation introuvable.';
-        }
-    } catch (error) {
-        errorMessage.value = 'Impossible de verifier la reservation.';
-    } finally {
-        isLoading.value = false;
-    }
+  await reservationStore.fetchReservationByToken(props.token);
 });
 
 const handleCancel = async () => {
-    if (!reservation.value?.id) {
-        return;
-    }
-    const response = await cancelReservation(reservation.value.id, props.token);
-    alert(response.message || 'Reservation annulee.');
+  if (!reservation.value?.id) return;
+  
+  try {
+    const response = await reservationStore.abortReservation(reservation.value.id, props.token);
+    alert(response.message || 'Réservation annulée.');
     router.push('/restaurants');
+  } catch (error) {
+    alert("Une erreur est survenue lors de l'annulation.");
+  }
 };
 
 const goToRestaurants = () => {
-    router.push('/restaurants');
+  router.push('/restaurants');
 };
 </script>
 

@@ -1,19 +1,23 @@
 <script setup>
-import { getRestaurantById } from '@/api/restaurant';
+import { storeToRefs } from 'pinia'; 
+import { useRestaurantStore } from '@/stores/restaurantStore';
 import SlotAndReservation from '@/components/restaurant/SlotAndReservation.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted} from 'vue';
 
-const restaurant = ref(null);
 
 const props = defineProps({
-    restaurantId: {
-        type: String,
-        required: true,
-    },
+  restaurantId: {
+    type: String,
+    required: true,
+  },
 });
 
+const restaurantStore = useRestaurantStore();
+
+const { selectedRestaurant: restaurant } = storeToRefs(restaurantStore); 
+
 onMounted(async () => {
-    restaurant.value = await getRestaurantById(props.restaurantId);
+  await restaurantStore.fetchRestaurantDetails(props.restaurantId);
 });
 </script>
 

@@ -3,14 +3,21 @@ import { getRestaurants } from '@/api/restaurant';
 import LongCardRestaurant from '@/components/restaurant/LongCardRestaurant.vue';
 import SmallCardRestaurant from '@/components/restaurant/SmallCardRestaurant.vue';
 import { computed, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia'; 
+import { useRestaurantStore } from '@/stores/restaurantStore'; 
 
-const restaurants = ref([]);
+
+const restaurantStore = useRestaurantStore();
+
+const { restaurants } = storeToRefs(restaurantStore);
+
 const featuredId = ref('');
 
 const previewRestaurants = computed(() => restaurants.value.slice(0, 3));
 
 onMounted(async () => {
-  restaurants.value = await getRestaurants();
+  await restaurantStore.fetchAllRestaurants();
+  
   if (restaurants.value.length > 0) {
     featuredId.value = restaurants.value[0].id;
   }
