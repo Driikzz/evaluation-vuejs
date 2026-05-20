@@ -1,4 +1,5 @@
 <script setup>
+import { createReservation } from '@/api/reservation';
 import { getSlotsForRestaurant } from '@/api/restaurant';
 import { onMounted, ref, watch } from 'vue';
 
@@ -45,10 +46,22 @@ const goBackToSlots = () => {
     step.value = 'slot-selection';
 };
 
-const confirmReservation = () => {
-    alert(
-        `Reservation confirmee pour ${reservationForm.value.name} (${reservationForm.value.guests} pers.) sur le creneau ${selectedSlot.value.startTime} - ${selectedSlot.value.endTime}`,
-    );
+const confirmReservation = async () => {
+    const reservationData = {
+        restaurantId: props.restaurantId,
+        timeSlotId: selectedSlot.value.id,
+        customerName: reservationForm.value.name,
+        customerEmail: reservationForm.value.email,
+        customerPhone: reservationForm.value.phone,
+        covers: reservationForm.value.guests,
+    };
+    const response = await createReservation(reservationData);
+    console.log(response.token);
+    if (response.status === 201) {
+        alert(response.message)
+    } else {
+        alert(response.message);
+    }
 };
 </script>
 
