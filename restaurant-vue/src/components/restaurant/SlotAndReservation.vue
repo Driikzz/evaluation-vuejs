@@ -1,10 +1,11 @@
 <script setup>
 import { getSlotsForRestaurant } from '@/api/restaurant';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const slots = ref([]);
 const selectedSlot = ref(null);
 const step = ref('slot-selection');
+const selectedDate = ref(new Date().toISOString().split('T')[0]);
 
 const reservationForm = ref({
     name: '',
@@ -20,9 +21,14 @@ const props = defineProps({
     },
 });
 
-onMounted(async () => {
-    slots.value = await getSlotsForRestaurant(props.restaurantId, new Date().toISOString().split('T')[0]);
-});
+const loadSlots = async () => {
+    slots.value = await getSlotsForRestaurant(props.restaurantId, selectedDate.value);
+    selectedSlot.value = null;
+    step.value = 'slot-selection';
+};
+
+onMounted(loadSlots);
+watch(selectedDate, loadSlots);
 
 const chooseSlot = (slot) => {
     selectedSlot.value = slot;
@@ -51,6 +57,8 @@ const confirmReservation = () => {
     <div class="slot-and-reservation">
         <template v-if="step === 'slot-selection'">
             <h2>Creneaux disponibles</h2>
+            <input v-model="selectedDate" type="date" />
+            <p class="date-label">Date choisie : {{ selectedDate }}</p>
             <div
                 class="slot"
                 v-for="slot in slots"
@@ -61,6 +69,7 @@ const confirmReservation = () => {
                 <p>{{ slot.startTime }} - {{ slot.endTime }}</p>
                 <small>{{ slot.totalCapacity }} couverts dispo</small>
             </div>
+            <p v-if="slots.length === 0" class="empty-slots">Aucun creneau disponible pour cette date.</p>
             <button class="action-button" type="button" :disabled="!selectedSlot" @click="goToReservation">
                 Reserver
             </button>
@@ -104,6 +113,11 @@ const confirmReservation = () => {
     border-radius: 8px;
     padding: 10px;
     cursor: pointer;
+}
+
+.date-label,
+.empty-slots {
+    margin: 0;
 }
 
 .slot.selected {

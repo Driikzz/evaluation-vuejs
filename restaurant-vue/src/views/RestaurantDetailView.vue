@@ -28,9 +28,6 @@ onMounted(async () => {
             <p class="restaurant-description">{{ restaurant.description }}</p>
             <p class="restaurant-address">{{ restaurant.address }}</p>
             <p class="restaurant-cuisine-type">{{ restaurant.cuisineType }}</p>
-            <div class="restaurant-capacity">
-                Nombre de couverts : {{ restaurant.totalCapacity }} / Nombre de couverts réservés : {{ restaurant.bookedCovers }}
-            </div>
         </div>
         <SlotAndReservation v-if="restaurant" :restaurant-id="restaurant.id" />
     </section>
@@ -72,11 +69,4 @@ onMounted(async () => {
     font-weight: bold;
     color: #333;
 }
-
-.restaurant-capacity {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #333;
-}
-
 </style>
