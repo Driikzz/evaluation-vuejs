@@ -9,6 +9,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  restaurant: {
+    type: Object,
+    default: null,
+  },
 });
 
 async function load() {

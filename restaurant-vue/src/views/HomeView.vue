@@ -27,7 +27,7 @@ onMounted(async () => {
     <section v-if="previewRestaurants.length" class="block">
       <div class="row-title">
         <h2 class="title">Restaurants</h2>
-        <a href="#" class="voir-plus" @click.prevent>Voir plus</a>
+        <RouterLink to="/restaurants" class="voir-plus">Voir plus</RouterLink>
       </div>
       <div class="cards-row">
         <SmallCardRestaurant
