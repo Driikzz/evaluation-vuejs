@@ -2,6 +2,7 @@
 import { createReservation } from '@/api/reservation';
 import { getSlotsForRestaurant } from '@/api/restaurant';
 import { onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 const slots = ref([]);
 const selectedSlot = ref(null);
@@ -21,6 +22,7 @@ const props = defineProps({
         required: true,
     },
 });
+const router = useRouter();
 
 const loadSlots = async () => {
     slots.value = await getSlotsForRestaurant(props.restaurantId, selectedDate.value);
@@ -56,11 +58,12 @@ const confirmReservation = async () => {
         covers: reservationForm.value.guests,
     };
     const response = await createReservation(reservationData);
-    console.log(response.token);
-    if (response.status === 201) {
-        alert(response.message)
+    const token = response?.token || response?.reservationToken;
+
+    if (token) {
+        router.push(`/reservation/${token}`);
     } else {
-        alert(response.message);
+        alert(response?.message || 'Impossible de confirmer la reservation.');
     }
 };
 </script>

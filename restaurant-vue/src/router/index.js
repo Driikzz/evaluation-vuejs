@@ -30,6 +30,12 @@ const router = createRouter({
           component: () => import('../views/RestaurantDetailView.vue'),
           props: (route) => ({ restaurantId: route.params.id }),
         },
+        {
+          path: 'reservation/:token',
+          name: 'confirm-reservation',
+          component: () => import('../views/ConfirmReservationView.vue'),
+          props: (route) => ({ token: route.params.token }),
+        },
       ],
     },
   ],
