@@ -19,7 +19,8 @@ onMounted(async () => {
 
 <template>
     <div class="restaurant-detail">
-        <div>
+        <p v-if="!restaurant">Chargement...</p>
+        <div v-else>
             <h1>{{ restaurant.name }}</h1>
             <div>
                 <img :src="restaurant.imageUrl" :alt="restaurant.name" />
@@ -31,7 +32,7 @@ onMounted(async () => {
                 Nombre de couverts : {{ restaurant.totalCapacity }} / Nombre de couverts réservés : {{ restaurant.bookedCovers }}
             </div>
         </div>
-        <SlotAndReservation :restaurant-id="restaurant.id" />
+        <SlotAndReservation v-if="restaurant" :restaurant-id="restaurant.id" />
     </div>
 
 </template>

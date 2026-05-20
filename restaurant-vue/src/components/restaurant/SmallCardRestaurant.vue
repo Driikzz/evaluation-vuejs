@@ -1,8 +1,10 @@
 <script setup>
 import { getRestaurantById } from '@/api/restaurant';
 import { onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 const display = ref(null);
+const router = useRouter();
 
 const props = defineProps({
   restaurantId: {
@@ -32,7 +34,7 @@ watch(
 
 const handleCardClick = (id) => {
   console.log('Test id:', id);
-  console.log('Test display:', display.value);
+  router.push(`/restaurant/${id}`);
 };
 
 </script>

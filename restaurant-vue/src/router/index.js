@@ -24,6 +24,12 @@ const router = createRouter({
           name: 'about',
           component: () => import('../views/AboutView.vue'),
         },
+        {
+          path: 'restaurant/:id',
+          name: 'restaurant-detail',
+          component: () => import('../views/RestaurantDetailView.vue'),
+          props: (route) => ({ restaurantId: route.params.id }),
+        },
       ],
     },
   ],
