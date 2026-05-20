@@ -49,7 +49,7 @@ const confirmReservation = () => {
 
 <template>
     <div class="slot-and-reservation">
-        <div class="slots">
+        <template v-if="step === 'slot-selection'">
             <h2>Creneaux disponibles</h2>
             <div
                 class="slot"
@@ -64,62 +64,45 @@ const confirmReservation = () => {
             <button class="action-button" type="button" :disabled="!selectedSlot" @click="goToReservation">
                 Reserver
             </button>
-        </div>
+        </template>
 
-        <div class="reservation">
-            <template v-if="step === 'slot-selection'">
-                <h2>Votre reservation</h2>
-                <p v-if="selectedSlot">
+        <template v-else>
+            <h2>Confirmer la reservation</h2>
+            <form class="reservation-form" @submit.prevent="confirmReservation">
+                <input v-model="reservationForm.name" type="text" placeholder="Nom" required />
+                <input v-model="reservationForm.email" type="email" placeholder="Mail" required />
+                <input v-model="reservationForm.phone" type="tel" placeholder="Telephone" required />
+                <input v-model.number="reservationForm.guests" type="number" min="1" placeholder="Nombre de personne" required />
+
+                <div class="selected-slot-preview">
                     Creneau selectionne :
                     <strong>{{ selectedSlot.startTime }} - {{ selectedSlot.endTime }}</strong>
-                </p>
-                <p v-else>Selectionne un creneau pour continuer.</p>
-            </template>
+                </div>
 
-            <template v-else>
-                <h2>Votre reservation</h2>
-                <form class="reservation-form" @submit.prevent="confirmReservation">
-                    <input v-model="reservationForm.name" type="text" placeholder="Nom" required />
-                    <input v-model="reservationForm.email" type="email" placeholder="Mail" required />
-                    <input v-model="reservationForm.phone" type="tel" placeholder="Telephone" required />
-                    <input v-model.number="reservationForm.guests" type="number" min="1" placeholder="Nombre de personne" required />
-
-                    <div class="selected-slot-preview">
-                        Slot selectionne precedemment :
-                        <strong>{{ selectedSlot.startTime }} - {{ selectedSlot.endTime }}</strong>
-                    </div>
-
-                    <div class="actions">
-                        <button class="secondary-button" type="button" @click="goBackToSlots">Retour</button>
-                        <button class="action-button" type="submit">Confirmer</button>
-                    </div>
-                </form>
-            </template>
-        </div>
+                <div class="actions">
+                    <button class="secondary-button" type="button" @click="goBackToSlots">Retour</button>
+                    <button class="action-button" type="submit">Confirmer</button>
+                </div>
+            </form>
+        </template>
     </div>
 </template>
 
 <style scoped>
 .slot-and-reservation {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-.slots,
-.reservation {
     border: 1px solid #d1d5db;
     border-radius: 12px;
-    padding: 1rem;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 10px;
+    min-width: 500px;
 }
 
 .slot {
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    padding: 0.6rem;
+    padding: 10px;
     cursor: pointer;
 }
 
@@ -131,25 +114,25 @@ const confirmReservation = () => {
 .reservation-form {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 10px;
 }
 
 input {
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    padding: 0.55rem 0.7rem;
+    padding: 10px;
 }
 
 .selected-slot-preview {
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    padding: 0.5rem;
-    font-size: 0.9rem;
+    padding: 10px;
+    font-size: 16px;
 }
 
 .actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 10px;
 }
 
 .action-button,
@@ -157,18 +140,12 @@ input {
     border: 1px solid #111827;
     border-radius: 8px;
     background: white;
-    padding: 0.45rem 0.75rem;
+    padding: 10px;
     cursor: pointer;
 }
 
 .action-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-@media (max-width: 760px) {
-    .slot-and-reservation {
-        grid-template-columns: 1fr;
-    }
 }
 </style>
